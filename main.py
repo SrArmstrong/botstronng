@@ -19,7 +19,7 @@ def run_flask():
         app.run(host="0.0.0.0", port=port)
     except Exception as e:
         print("⚠️ Error en el servidor Flask:")
-        traceback.print_exc()  # Muestra el tipo de error y el traceback
+        traceback.print_exc()
 
 # === Configurar Discord ===
 intents = discord.Intents.default()
@@ -29,10 +29,19 @@ bot = commands.Bot(command_prefix='$', intents=intents)
 @bot.command()
 async def ping(ctx, *args):
     try:
+        if not args:
+            await ctx.send("⚠️ Debes escribir un mensaje después de `$ping`.")
+            return
+        
         respuesta = ' '.join(args)
         await ctx.send(respuesta)
+
+    except discord.errors.HTTPException as http_error:
+        print("⚠️ Error HTTP al enviar mensaje:")
+        traceback.print_exc()
+
     except Exception as e:
-        print("⚠️ Error en el comando 'ping':")
+        print("⚠️ Error general en el comando 'ping':")
         traceback.print_exc()
 
 @bot.event
